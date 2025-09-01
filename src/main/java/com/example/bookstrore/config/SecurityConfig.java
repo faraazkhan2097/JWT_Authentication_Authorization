@@ -5,6 +5,7 @@ import com.example.bookstrore.service.JwtService;
 import com.example.bookstrore.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,6 +35,10 @@ public class SecurityConfig {
                         req -> req.requestMatchers("/bookstore/login/**", "/bookstore/register/**")
                                 .permitAll()
                                 .requestMatchers("/bookstore/admin_only/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/bookstore/books/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/bookstore/addbook/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/bookstore/{id}/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/bookstore/{id}/**").hasAuthority("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 ).userDetailsService(_userDetailsServiceImpl)
